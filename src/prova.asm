@@ -1,16 +1,26 @@
 //This file is generated from prova.vm
 
-//pop static 23
-    @prova.23
+//push constant 10
+    @10
     D=A
+    @SP
+    A=M
+    M=D
+    @SP
+    M=M+1
+//pop local 0
+    @LCL
+    D=M
+    @0
+    D=A+D
     @R13
     M=D
-    @sp
+    @SP
     A=M
     A=A-1
     D=M
-    @prova.23
+    @13
     A=M
     M=D
-    @sp
+    @SP
     M=M-1

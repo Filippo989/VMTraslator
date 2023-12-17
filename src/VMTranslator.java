@@ -7,15 +7,14 @@ public class VMTranslator {
         System.out.println("Insert the file path");
         Scanner scanner = new Scanner(System.in);
 
-        File file = new File("/home/filippo/Progetti/Java/NandToTetris/VMTraslator/src/prova.vm");
+        File file = new File("prova.vm");
         Parser parser = new Parser(file);
-        CodeWriter codeWriter = new CodeWriter("/home/filippo/Progetti/Java/NandToTetris/VMTraslator/src/prova.vm", file.getName());
+        CodeWriter codeWriter = new CodeWriter("prova.vm", file.getName());
 
         while(parser.hasNextLine()) {
             parser.advance();
             switch(parser.getCommandType()) {
                 case C_ARITHMETIC:
-                    System.out.println("ciao" + parser.getArg1());
                     codeWriter.writeArithmetic(parser.getArg1());
                     break;
                 case C_PUSH:

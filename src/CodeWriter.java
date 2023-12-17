@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static java.lang.System.exit;
+import static java.lang.System.in;
 
 public class CodeWriter {
 
@@ -42,26 +43,34 @@ public class CodeWriter {
                 case "this":
                 case "that":
                     calculateStandardOffset(segment, index);
+                    code.add("D=A");
+                    code.add("@"+index);
+                    code.add("A=A+D");
+                    code.add("D=M");
                     break;
                 case "static":
                     code.add("@" + removeVm(fileName) + "." + index);
                     code.add("D=M");
                     break;
                 case "temp":
-                    int i = index + 5;
-                    code.add("@" + i);
+                    int i = 5 + index;
+                    code.add("@"+i);
+                    code.add("D=A");
+                    code.add("@"+index);
+                    code.add("A=A+D");
                     code.add("D=M");
+                    break;
                 case "constant":
                     code.add("@"+index);
                     code.add("D=A");
                     break;
                 case "pointer":
-                    if(index == 0) {
-                        code.add("@THIS");
-                    } else if(index == 1) {
-                        code.add("@THAT");
-                    }
+                    int ii = 3 + index;
+                    code.add("@" + ii);
                     code.add("D=A");
+                    code.add("@"+index);
+                    code.add("A=A+D");
+                    code.add("D=M");
                     break;
             }
 
@@ -82,20 +91,17 @@ public class CodeWriter {
                 case "static":
                     writeStaticPop(index);
                     writeToFile();
-                    return;
+                    break;
                 case "temp":
-                    int i = index + 5;
-                    code.add("@" + i);
-                    code.add("A=D");
+                    int i = 5 + index;
+                    code.add("@"+i);
+                    code.add("D=A");
+                    break;
                 case "constant":
-                    System.out.println("Error: cannot pop a constant");
-                    exit(-2);
+                    System.out.println("ERROR, CANNOT POP CONSTANT!");
                 case "pointer":
-                    if(index == 0) {
-                        code.add("@THIS");
-                    } else if(index == 1) {
-                        code.add("@THAT");
-                    }
+                    int ii = 3 + index;
+                    code.add("@"+ii);
                     code.add("D=A");
                     break;
             }
@@ -103,6 +109,7 @@ public class CodeWriter {
             code.add("@R13");
             code.add("M=D");
             code.add("@SP");
+            code.add("A=M");
             code.add("A=A-1");
             code.add("D=M");
             code.add("@13");
@@ -115,20 +122,11 @@ public class CodeWriter {
     }
 
     private void writeStaticPop(int index){
-        System.out.println("Pisello");
-        code.add("@" + removeVm(fileName) + "." + index);
-        code.add("D=A");
-        code.add("@R13");
-        code.add("M=D");
-        code.add("@sp");
-        code.add("A=M");
-        code.add("A=A-1");
+        code.add("@SP");
+        code.add("AM=M-1");
         code.add("D=M");
         code.add("@" + removeVm(fileName) + "." + index);
-        code.add("A=M");
         code.add("M=D");
-        code.add("@sp");
-        code.add("M=M-1");
     }
 
     public void writeArithmetic(String arg1) {
@@ -191,8 +189,8 @@ public class CodeWriter {
         //actual operation
         switch(arg1) {
             case "eq" -> code.add("D;JEQ");
-            case "gt" -> code.add("D;JGT");
-            case "lt" -> code.add("D;JLT");
+            case "gt" -> code.add("D;JLT");
+            case "lt" -> code.add("D;JGT");
         }
 
         code.add("D=0");
@@ -231,8 +229,7 @@ public class CodeWriter {
 
         code.add("D=M");
         code.add("@"+index);
-        code.add("A=A+D");
-        code.add("D=M");
+        code.add("D=A+D");
     }
 
     private void writeStandardPop(String segment, int index) {

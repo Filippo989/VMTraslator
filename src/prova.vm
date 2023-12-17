@@ -1,1 +1,2 @@
-pop static 23
+push constant 10
+pop local 0
