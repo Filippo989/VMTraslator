@@ -7,7 +7,7 @@ public class VMTranslator {
         System.out.println("Insert the file path");
         Scanner scanner = new Scanner(System.in);
 
-        File file = new File("prova.vm");
+        File file = new File("src/prova.vm");
         Parser parser = new Parser(file);
         CodeWriter codeWriter = new CodeWriter("prova.vm", file.getName());
 

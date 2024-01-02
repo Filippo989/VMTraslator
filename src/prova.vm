@@ -1,2 +1,1 @@
-push constant 10
-pop local 0
+pop static 3

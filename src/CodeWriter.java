@@ -45,10 +45,8 @@ public class CodeWriter {
                 case "this":
                 case "that":
                     calculateStandardOffset(segment, index);
-                    code.add("D=A");
-                    code.add("@"+index);
-                    code.add("A=A+D");
-                    code.add("D=M");
+                    code.add("");
+                    code.add("");
                     break;
                 case "static":
                     code.add("@" + removeVm(fileName) + "." + index);
@@ -67,11 +65,13 @@ public class CodeWriter {
                     code.add("D=A");
                     break;
                 case "pointer":
-                    int ii = 3 + index;
-                    code.add("@" + ii);
+                    if(index == 0) {
+                        code.add("@THIS");
+                    } else if (index == 1) {
+                        code.add("@THAT");
+                    }
                     code.add("D=A");
-                    code.add("@"+index);
-                    code.add("A=A+D");
+                    code.add("A=D");
                     code.add("D=M");
                     break;
             }
@@ -93,7 +93,7 @@ public class CodeWriter {
                 case "static":
                     writeStaticPop(index);
                     writeToFile();
-                    break;
+                    return;
                 case "temp":
                     int i = 5 + index;
                     code.add("@"+i);
@@ -101,13 +101,16 @@ public class CodeWriter {
                     break;
                 case "constant":
                     System.out.println("ERROR, CANNOT POP CONSTANT!");
+                    break;
                 case "pointer":
-                    int ii = 3 + index;
-                    code.add("@"+ii);
+                    if(index == 0) {
+                        code.add("@THIS");
+                    } else if (index == 1) {
+                        code.add("@THAT");
+                    }
                     code.add("D=A");
                     break;
             }
-
             code.add("@R13");
             code.add("M=D");
             code.add("@SP");
@@ -169,7 +172,7 @@ public class CodeWriter {
         //actual operation
         switch(arg1) {
             case "add" -> code.add("M=D+M");
-            case "sub" -> code.add("M=D-M");
+            case "sub" -> code.add("M=M-D");
             case "and" -> code.add("M=D&M");
             case "or" -> code.add("M=M|D");
         }
