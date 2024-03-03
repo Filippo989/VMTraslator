@@ -1,15 +1,22 @@
 import java.io.*;
 import java.util.Scanner;
 
+import static java.lang.System.exit;
+
 public class VMTranslator {
 
     public static void main(String[] args) {
         System.out.println("Insert the file path");
         Scanner scanner = new Scanner(System.in);
+        String path = scanner.nextLine();
+        if (!(path.contains(".vm"))) {
+           System.out.println("You should provide a .vm file");
+           exit(-1);
+        }
 
-        File file = new File("src/prova.vm");
+        File file = new File(path);
         Parser parser = new Parser(file);
-        CodeWriter codeWriter = new CodeWriter("prova.vm", file.getName());
+        CodeWriter codeWriter = new CodeWriter(path, file.getName());
 
         while(parser.hasNextLine()) {
             parser.advance();
